@@ -34,7 +34,17 @@ float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
 // - For each node in current_node.neighbors, add the neighbor to open_list and set the node's visited attribute to true.
 
 void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
-
+  current_node->FindNeighbors();
+  for(RouteModel::Node * neighbor_node : current_node->neighbors){
+    neighbor_node->parent = current_node;
+    neighbor_node->h_value = CalculateHValue(neighbor_node);
+    neighbor_node->g_value = current_node->g_value + current_node->distance(*neighbor_node);
+    if(neighbor_node->visited == false){
+      open_list.emplace_back(neighbor_node);
+      neighbor_node->visited = true;
+    }
+  }
+  
 }
 
 
